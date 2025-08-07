@@ -1,0 +1,91 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CodeRunHub - Online Compiler</title>
+  <style>
+    body {
+      font-family: Arial;
+      background-color: #f2f2f2;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+    }
+    select, textarea, button {
+      width: 100%;
+      margin-top: 10px;
+      padding: 10px;
+      font-size: 16px;
+    }
+    #output {
+      background: #000;
+      color: #0f0;
+      padding: 10px;
+      margin-top: 10px;
+      font-family: monospace;
+      min-height: 100px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>CodeRunHub - Online Compiler</h1>
+    
+    <label for="language">Select Language:</label>
+    <select id="language">
+      <option value="54">C</option>
+      <option value="62">Java</option>
+      <option value="71">Python</option>
+    </select>
+
+    <label for="code">Enter your code:</label>
+    <textarea id="code" rows="10" placeholder="Write your code here..."></textarea>
+
+    <button onclick="runCode()">Run Code</button>
+
+    <h3>Output:</h3>
+    <div id="output">Waiting for output...</div>
+  </div>
+
+  <script>
+    function runCode() {
+      const code = document.getElementById('code').value;
+      const languageId = document.getElementById('language').value;
+
+      const options = {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          'X-RapidAPI-Key': '612f1f0a01mshaca4ddb048c1196p164de2jsndebc9f2deba5', // 🔁 Replace this with your API Key
+          'X-RapidAPI-Host': 'judge0-ce.p.rapidapi.com'
+        },
+        body: JSON.stringify({
+          language_id: languageId,
+          source_code: code
+        })
+      };
+
+      document.getElementById('output').innerText = 'Running...';
+
+      fetch('https://judge0-ce.p.rapidapi.com/submissions?base64_encoded=false&wait=true', options)
+        .then(response => response.json())
+        .then(response => {
+          const output = response.stdout || response.stderr || response.compile_output || 'No output';
+          document.getElementById('output').innerText = output;
+        })
+        .catch(err => {
+          document.getElementById('output').innerText = 'Error: ' + err;
+        });
+    }
+  </script>
+</body>
+</html>
